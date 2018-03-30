@@ -1,9 +1,24 @@
 version: '2'
 
 services:
-  web-server:
+  base:
     image: nginx:1.13
     volumes:
       - ./site:/usr/share/nginx/html
+      - ./cert:/etc/nginx/ssl
+
+  web-server-http1:
+    extends:
+      service: base
+    volumes:
+      - ./config/base-ssl.conf:/etc/nginx/nginx.conf
     ports:
-      - "80:80"
+      - "443:443"
+
+  web-server-http2:
+    extends:
+      service: base
+    volumes:
+      - ./config/base-ssl-http2.conf:/etc/nginx/nginx.conf
+    ports:
+      - "444:443"
